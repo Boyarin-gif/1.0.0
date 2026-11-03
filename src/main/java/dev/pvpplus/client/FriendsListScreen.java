@@ -40,7 +40,7 @@ public final class FriendsListScreen extends Screen {
         }
 
         addDrawableChild(ButtonWidget.builder(Text.literal("Назад"), b ->
-                MinecraftClient.getInstance().setScreen(new CoOpScreen(0))).dimensions(x + 12, y + panelH() - 32, 90, 20).build());
+                MinecraftClient.getInstance().setScreen(CoOpScreen.create())).dimensions(x + 12, y + panelH() - 32, 90, 20).build());
 
         FriendManager.FriendVisualSettings settings = selectedName == null ? null : FriendManager.settingsFor(selectedName);
         int buttonW = Math.max(110, rightW - 18);
