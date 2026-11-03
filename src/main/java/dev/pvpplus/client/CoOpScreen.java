@@ -643,3 +643,6 @@ public final class CoOpScreen extends Screen {
     @Override public void close() { saveDraft(); super.close(); }
     @Override public boolean shouldPause() { return false; }
 }
+public static CoOpScreen create() {
+    return new CoOpScreen(0);
+}
