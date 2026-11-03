@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "pvpplus",
+  "version": "${version}",
+  "name": "Plus Visuals",
+  "description": "Plus Visuals 1.0: 3D-каталог косметики, загрузка PNG-скина, подсветка настоящей модели брони друзей, цветной Item Glow и оптимизация визуальных эффектов.",
+  "license": "MIT",
+  "icon": "assets/pvpplus/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.pvpplus.PvpPlus"
+    ],
+    "client": [
+      "dev.pvpplus.client.PvpPlusClient"
+    ]
+  },
+  "mixins": [
+    {
+      "config": "pvpplus.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.20.1",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
