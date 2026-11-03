@@ -300,7 +300,7 @@ public final class FriendManager {
                 Box box = target.getBoundingBox().expand(0.015);
                 try {
                     GizmoDrawing.box(box, DrawStyle.stroked(color, 1.4F), false).withLifespan(2);
-                } catch (Exception ignored) {
+                } catch (Exception exception) {
                     // One broken target should not interrupt other friend visuals.
                 }
             }
