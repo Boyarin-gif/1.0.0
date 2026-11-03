@@ -1,0 +1,11 @@
+Plus Visual 5.2.3 - follow-up compile fix
+
+This package retains the FriendArmorTintMixin change from the previous 5.2.3 package and additionally updates CosmeticsScreen mouse callbacks for Minecraft 1.21.11:
+- mouseClicked(Click, boolean)
+- mouseDragged(Click, double, double)
+- mouseReleased(Click)
+- Calls to super use the same 1.21.11 signatures.
+- Player preview rotation uses the drag delta (offsetX).
+
+Build verification was not run in this environment because Gradle is not installed.
+Please run: gradle build --no-daemon

@@ -1,0 +1,29 @@
+Plus Visual 5.2.5 — fix: "Диалог файлов недоступен в headless-среде"
+
+Причина: кнопка "Добавить скин" использовала java.awt.FileDialog и явно проверяла
+GraphicsEnvironment.isHeadless(). AWT-диалоги не работают, если JVM запущена с флагом
+-Djava.awt.headless=true — а так запускает игру большинство лаунчеров Minecraft (в том
+числе официальный), поскольку самой игре AWT не нужен. Отсюда и сообщение.
+
+Исправление: файловый диалог теперь открывается через LWJGL TinyFileDialogs
+(org.lwjgl.util.tinyfd.TinyFileDialogs) — нативный системный диалог, который LWJGL вызывает
+напрямую через GLFW/JNI, в обход AWT. Библиотека lwjgl-tinyfd уже входит в стандартный набор
+библиотек самого клиента Minecraft (используется игрой для части системных диалогов), так что
+никаких новых зависимостей добавлять в build.gradle не потребовалось.
+
+Файл: src/main/java/dev/pvpplus/client/PreviewSkinManager.java
+  - убраны импорты java.awt.FileDialog / Frame / GraphicsEnvironment
+  - добавлены org.lwjgl.PointerBuffer, org.lwjgl.system.MemoryStack,
+    org.lwjgl.util.tinyfd.TinyFileDialogs
+  - chooseAndLoadSkin(...) теперь открывает диалог через
+    TinyFileDialogs.tinyfd_openFileDialog(title, null, filters("*.png"), "PNG images", false)
+  - остальная логика (проверка 64×64, сохранение в config/plusvisual/preview_skin.png,
+    обновление текстуры превью) не изменилась
+
+Сигнатура tinyfd_openFileDialog сверена по javadoc.lwjgl.org:
+  static @Nullable String tinyfd_openFileDialog(CharSequence title, CharSequence defaultPath,
+      PointerBuffer filterPatterns, CharSequence singleFilterDescription, boolean allowMultiple)
+
+Не проверено в этой офлайн-среде (нет Gradle): сама компиляция и то, что диалог реально
+откроется на твоей ОС (Windows/macOS/Linux) — но так как это та же библиотека, что уже
+использует сам клиент Minecraft, риск низкий.

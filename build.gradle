@@ -1,0 +1,72 @@
+plugins {
+    id 'fabric-loom' version '1.14.10'
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": inputs.properties.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+
+// The project intentionally uses a dependency-free main-based self-test instead of JUnit.
+// Run it as part of the normal build so Gradle verifies RoomCode rather than failing
+// because the standard Test task finds no JUnit/TestNG test methods.
+tasks.register('roomCodeSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Runs dependency-free RoomCode validation checks.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass.set('dev.pvpplus.client.RoomCodeSelfTest')
+}
+
+tasks.register('effectSettingsSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks the color palette and independent per-effect visual settings.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass.set('dev.pvpplus.client.EffectSettingsSelfTest')
+}
+
+
+tasks.register('waypointScopeSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks that personal and cooperative waypoints stay in separate collections.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass.set('dev.pvpplus.client.WaypointScopeSelfTest')
+}
+
+tasks.named('test') {
+    // Dependency-free main-based regression tests run explicitly above.
+    failOnNoDiscoveredTests = false
+    dependsOn tasks.named('roomCodeSelfTest')
+    dependsOn tasks.named('effectSettingsSelfTest')
+    dependsOn tasks.named('waypointScopeSelfTest')
+}
