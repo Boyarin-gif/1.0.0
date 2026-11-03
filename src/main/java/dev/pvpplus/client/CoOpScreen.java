@@ -639,10 +639,10 @@ public final class CoOpScreen extends Screen {
         }
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
-
+public static CoOpScreen create() {
+        return new CoOpScreen(0);
+    }
     @Override public void close() { saveDraft(); super.close(); }
     @Override public boolean shouldPause() { return false; }
 }
-public static CoOpScreen create() {
-    return new CoOpScreen(0);
-}
+
